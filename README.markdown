@@ -1,12 +1,20 @@
 # README
 
-This module is a composite of other open source modules and original code to
-make interfacing with the Protocol Buffers protocol easy.
+## Protocol Buffers Docs
 
-## Tests
+<http://code.google.com/apis/protocolbuffers/docs/overview.html>
+
+## Compile
 
     $ make
+    ./rebar compile
+    ==> erlang_protobuffs (compile)
+    ...
+
+## Test
+
     $ test/run
+      All 7 tests passed.
 
 ## Encode / Decode
 
@@ -34,7 +42,7 @@ Decoding is simple too.
 The main objective of this module is to allow developers to use .proto files
 easily. This module provides very basic functionality to do so.
 
-Consider the `t/simple.proto` file.
+Consider the `test/simple.proto` file.
 
     message Person {
     	required string name = 1;
@@ -48,11 +56,11 @@ Person message into records.
 
     1> protobuffs_compile:scan_file("simple.proto").
     ok
-	2> simple_pb:decode_person(<<10,4,78,105,99,107,18,13,77,111,...>>).
-	{person,<<"Nick">>,<<"Mountain View">>, <<"+1 (000) 555-1234">>,25}
-	3> simple_pb:encode_person({person, <<"Nick">>, <<"Mountain View">>,
-	    <<"+1 (000) 555-1234">>,25}).
-	<<10,4,78,105,99,107,18,13,77,111,117,110,116,97,105,110,32,86,105,...>>
+    2> simple_pb:decode_person(<<10,4,78,105,99,107,18,13,77,111,...>>).
+    {person,<<"Nick">>,<<"Mountain View">>, <<"+1 (000) 555-1234">>,25}
+    3> simple_pb:encode_person({person, <<"Nick">>, <<"Mountain View">>,
+       <<"+1 (000) 555-1234">>,25}).
+    <<10,4,78,105,99,107,18,13,77,111,117,110,116,97,105,110,32,86,105,...>>
 
 How cool is that? From .proto files, we create modules that export encode and
 decode functions for the messages defined.
