@@ -3,6 +3,11 @@
 This module is a composite of other open source modules and original code to
 make interfacing with the Protocol Buffers protocol easy.
 
+## Tests
+
+    $ make
+    $ test/run
+
 ## Encode / Decode
 
 Encoding is simple.
