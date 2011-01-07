@@ -1,6 +1,6 @@
 package repeater;
 
-message Person {
+message Person1 {
 	required string name = 1;
 	required string address = 2;
 	required string phone_number = 3;

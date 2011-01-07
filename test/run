@@ -1,0 +1,3 @@
+#!/bin/sh
+
+erl -sname protobuffs -pa ebin -noshell -eval 'eunit:test(protobuffs_tests)' -s init stop

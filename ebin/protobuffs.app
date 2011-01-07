@@ -6,7 +6,8 @@
                pokemon_pb,
                protobuffs,
                protobuffs_compile,
-               protobuffs_parser
+               protobuffs_parser,
+               protobuffs_tests
     ]},
     {registered, []},
     {applications, [
