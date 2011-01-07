@@ -32,12 +32,13 @@ scan_file(ProtoFile) when is_list(ProtoFile) ->
     output(Basename, Messages).
 
 output(Basename, Messages) ->
-    ok = write_header_include_file(Basename, Messages),
+    Module = list_to_atom(Basename),
     BeamFile = filename:dirname(code:which(?MODULE)) ++ "/pokemon_pb.beam",
     {ok,{_,[{abstract_code,{_,Forms}}]}} = beam_lib:chunks(BeamFile, [abstract_code]),
     Forms1 = filter_forms(Messages, Forms, Basename, []),
     {ok, _, Bytes, _} = compile:forms(Forms1, [return, debug_info]),
-    file:write_file(Basename ++ ".beam", Bytes).
+    {module, Module} = code:load_binary(Module, Basename ++ ".beam", Bytes),
+    ok.
 
 filter_forms(Msgs, [{attribute,L,file,{_,_}}|Tail], Basename, Acc) ->
     filter_forms(Msgs, Tail, Basename, [{attribute,L,file,{"src/" ++ Basename ++ ".erl",L}}|Acc]);
@@ -175,14 +176,6 @@ collect_full_messages([_|Tail], Acc) ->
   collect_full_messages(Tail, Acc);
 collect_full_messages([], Acc) ->
     Acc.
-
-write_header_include_file(Basename, Messages) ->
-    {ok, FileRef} = file:open(Basename ++ ".hrl", [write]),
-    [begin
-        OutFields = [string:to_lower(A) || {_, _, _, A, _, _} <- lists:keysort(1, Fields)],
-        io:format(FileRef, "-record(~s, {~s}).~n", [string:to_lower(Name), string:join(OutFields, ", ")])
-    end || {Name, Fields} <- Messages],
-    file:close(FileRef).
 
 atomize(String) ->
     list_to_atom(string:to_lower(String)).
