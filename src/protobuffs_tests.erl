@@ -4,6 +4,7 @@
 -record(location, {region, country}).
 -record(person, {name, address, phone_number, age, location}).
 -record(person1, {name, address, phone_number, age, hobbies, locations}).
+-record(pizza, {size, sauce}).
 
 encode_test() ->
     ?assertEqual(protobuffs:encode(1, 1, uint32), <<8,1>>),
@@ -186,4 +187,18 @@ required_field_test() ->
 
     ?assertExit({error, {required_field_is_undefined,1,string}}, hasdefault_pb:encode_person(#person{})),
 
+    ok.
+
+enum_test() ->
+    ?assertEqual(protobuffs_compile:scan_file("test/enum.proto"), ok),
+    
+    Pizza = #pizza {
+        size = 1,
+        sauce = "tomato"
+    },
+    
+    Bin = enum_pb:encode_pizza(Pizza),
+    
+    ?assertEqual(enum_pb:decode_pizza(Bin), Pizza),
+    
     ok.

@@ -59,7 +59,12 @@ pack(FNum, _, Data, _, _) when is_tuple(Data) ->
     protobuffs:encode(FNum, encode(RecName, Data), bytes);
 
 pack(FNum, _, Data, Type, _) ->
-    protobuffs:encode(FNum, Data, Type).
+    case lists:member(Type, [bool, enum, int32, uint32, int64, unit64, sint32, sint64, fixed32, sfixed32, fixed64, sfixed64, string, bytes, float, double]) of
+        true ->
+            protobuffs:encode(FNum, Data, Type);
+        false ->
+            protobuffs:encode(FNum, Data, int32)
+    end.
 
 %% DECODE
 decode_pikachu(Bytes) when is_binary(Bytes) ->
