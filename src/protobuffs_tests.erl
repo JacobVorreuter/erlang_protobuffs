@@ -59,6 +59,7 @@ simple_compile_test() ->
 
     ?assertEqual(simple_pb:decode_person(Bin), Person),
 
+    ok = file:delete("simple_pb.hrl"),
     ok.
 
 simple_compile_again_test() ->
@@ -94,6 +95,7 @@ simple_compile_again_test() ->
     ?assertEqual(simple_pb:encode_location(Location), LocationBinData),
     ?assertEqual(simple_pb:encode_person(Person), PersonBinData),
 
+    ok = file:delete("simple_pb.hrl"),
     ok.
 
 repeater_compile_test() ->
@@ -157,6 +159,7 @@ repeater_compile_test() ->
 
     ?assertEqual(repeater_pb:decode_person1(repeater_pb:encode_person1(Person3)), Person3),
 
+    ok = file:delete("repeater_pb.hrl"),
     ok.
 
 defaults_compile_test() ->
@@ -180,6 +183,7 @@ defaults_compile_test() ->
 
     ?assertEqual(hasdefault_pb:decode_person(Bin), DefaultPerson),
 
+    ok = file:delete("hasdefault_pb.hrl"),
     ok.
 
 required_field_test() ->
@@ -187,18 +191,20 @@ required_field_test() ->
 
     ?assertExit({error, {required_field_is_undefined,1,string}}, hasdefault_pb:encode_person(#person{})),
 
+    ok = file:delete("hasdefault_pb.hrl"),
     ok.
 
 enum_test() ->
     ?assertEqual(protobuffs_compile:scan_file("test/enum.proto"), ok),
-    
+
     Pizza = #pizza {
         size = 1,
         sauce = "tomato"
     },
-    
+
     Bin = enum_pb:encode_pizza(Pizza),
-    
+
     ?assertEqual(enum_pb:decode_pizza(Bin), Pizza),
-    
+
+    ok = file:delete("enum_pb.hrl"),
     ok.

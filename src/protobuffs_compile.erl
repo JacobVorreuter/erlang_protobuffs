@@ -32,6 +32,7 @@ scan_file(ProtoFile) when is_list(ProtoFile) ->
     output(Basename, Messages).
 
 output(Basename, Messages) ->
+    ok = write_header_include_file(Basename, Messages),
     Module = list_to_atom(Basename),
     BeamFile = filename:dirname(code:which(?MODULE)) ++ "/pokemon_pb.beam",
     {ok,{_,[{abstract_code,{_,Forms}}]}} = beam_lib:chunks(BeamFile, [abstract_code]),
@@ -176,6 +177,14 @@ collect_full_messages([_|Tail], Acc) ->
   collect_full_messages(Tail, Acc);
 collect_full_messages([], Acc) ->
     Acc.
+
+write_header_include_file(Basename, Messages) ->
+    {ok, FileRef} = file:open(Basename ++ ".hrl", [write]),
+    [begin
+        OutFields = [string:to_lower(A) || {_, _, _, A, _, _} <- lists:keysort(1, Fields)],
+        io:format(FileRef, "-record(~s, {~s}).~n", [string:to_lower(Name), string:join(OutFields, ", ")])
+    end || {Name, Fields} <- Messages],
+    file:close(FileRef).
 
 atomize(String) ->
     list_to_atom(string:to_lower(String)).
